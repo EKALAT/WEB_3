@@ -1,0 +1,141 @@
+<?php
+session_start();
+
+if (isset($_SESSION['SESSION_EMAIL'])) {
+    header("Location: ../index.php");
+    die();
+}
+
+include 'config.php';
+$msg = "";
+
+// Account verification via URL (if verification code exists)
+if (isset($_GET['verification'])) {
+    $verificationCode = mysqli_real_escape_string($conn, $_GET['verification']);
+    $result = mysqli_query($conn, "SELECT * FROM users WHERE code='$verificationCode'");
+
+    if (mysqli_num_rows($result) > 0) {
+        $query = mysqli_query($conn, "UPDATE users SET code='' WHERE code='$verificationCode'");
+
+        if ($query) {
+            $msg = "<div class='alert alert-success'>Account verification has been successfully completed.</div>";
+        }
+    } else {
+        header("Location: index.php");
+        exit();
+    }
+}
+
+// Login process
+if (isset($_POST['submit'])) {
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $password = mysqli_real_escape_string($conn, md5($_POST['password']));
+
+    // Validate the credentials
+    $sql = "SELECT * FROM users WHERE email='$email' AND password='$password'";
+    $result = mysqli_query($conn, $sql);
+
+    if (mysqli_num_rows($result) === 1) {
+        $row = mysqli_fetch_assoc($result);
+
+        // If account is verified
+        if (empty($row['code'])) {
+            $_SESSION['SESSION_EMAIL'] = $email;  // Store email in session 
+            $_SESSION['user'] = $row['name'];  
+            $_SESSION['phone'] = $row['phone'];  
+            $_SESSION['location'] = $row['location'];  
+            echo "<script>
+
+                    document.addEventListener('DOMContentLoaded', function() {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Login Successful',
+                            text: 'Welcome " . $_SESSION['user'] . " to PMS Hotel! ',
+                            confirmButtonText: 'Proceed',
+                            allowOutsideClick: false
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '../index.php';
+                            }
+                        });
+                    });
+                  </script>";
+        } else {
+            $msg = "<div class='alert alert-info'>First verify your account and try again.</div>";
+        }
+    } else {
+        $msg = "<div class='alert alert-danger'>Email or password do not match.</div>";
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <title>PMS HOTEL - LOGIN</title>
+    <!-- Meta tag Keywords -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" />
+    <meta name="keywords" content="Login Form" />
+    <link href="//fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!--/Style-CSS -->
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="all" />
+    <!--//Style-CSS -->
+    <script src="https://kit.fontawesome.com/af562a2a63.js" crossorigin="anonymous"></script>
+    <link rel="icon" href="../images/iconweb/laos.png" type="image/png">
+    <!-- Include SweetAlert2 CSS and JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+
+    <!-- form section start -->
+    <section class="w3l-mockup-form">
+        <div class="container">
+            <!-- /form -->
+            <div class="workinghny-form-grid">
+                <div class="main-mockup">
+                    <div class="alert-close">
+                        <span class="fa fa-close"></span>
+                    </div>
+                    <div class="w3l_form align-self">
+                        <div class="left_grid_info">
+                            <img src="images/image.svg" alt="">
+                        </div>
+                    </div>
+                    <div class="content-wthree">
+                        <h2>Login Now</h2>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. </p>
+                        <?php echo $msg; ?>
+                        <form action="" method="post">
+                            <input type="email" class="email" name="email" placeholder="Enter Your Email" required>
+                            <input type="password" class="password" name="password" placeholder="Enter Your Password" required>
+                            <p><a href="forgot-password.php" style="margin-bottom: 15px; display: block; text-align: right;">Forgot Password?</a></p>
+                            <button name="submit" class="btn" type="submit">Login</button>
+                        </form>
+                        <div class="social-icons">
+                            <p>Create Account! <a href="register.php">Register</a>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- //form -->
+        </div>
+    </section>
+    <!-- //form section start -->
+
+    <script src="js/jquery.min.js"></script>
+    <script>
+        $(document).ready(function (c) {
+            $('.alert-close').on('click', function (c) {
+                $('.main-mockup').fadeOut('slow', function (c) {
+                    $('.main-mockup').remove();
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>

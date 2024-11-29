@@ -1,0 +1,87 @@
+.pop:hover {
+    border-top-color: var(--teal) !important;
+    transform: scale(1.03);
+    transition: all 0.3s;
+}
+
+.star-rating {
+    color: #ffd700;
+    font-size: 30px;
+    /* Yellow color for active stars */
+    cursor: pointer;
+}
+
+.star-rating .inactive {
+    color: #ccc;
+    font-size: 30px;
+    /* Grey color for inactive stars */
+}
+
+/* Reviewer's Name Styling */
+.review-container h3 {
+    font-size: 30px;
+    font-weight: bold;
+    color: #2c3e50;
+    font-family: 'Merriweather', serif;
+
+
+    /* Dark blue for the name */
+    margin-bottom: 5px;
+    /* Space between name and stars */
+}
+
+/* Rating Container (Stars) */
+.review-container .rating-container {
+    font-size: 30px;
+    /* Adjust size of stars */
+    color: #f39c12;
+    /* Gold color for stars */
+    margin-top: 5px;
+    /* Space between name and stars */
+    margin-bottom: 10px;
+    /* Optional: Adjust space below the stars if needed */
+}
+
+/* Additional styling for the container or text, if needed */
+.review-container .name {
+    margin-bottom: 10px;
+    /* Space between the product name/label and stars */
+    font-size: 18px;
+    /* Adjust the font size of the name */
+}
+
+/* Review Text Styling */
+.review-container p {
+    color: #34495e;
+    /* Slate Blue for review text */
+    font-size: 20px;
+    line-height: 1.6;
+    margin-bottom: 12px;
+    background-color: #ecf0f1;
+    /* Light gray background */
+    padding: 12px 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Review Timestamp Styling */
+.review-container small {
+    color: #7f8c8d;
+    /* Light gray for the timestamp */
+    font-size: 14px;
+}
+
+/* Review Container Styling */
+.review-container {
+    padding: 18px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.review-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
