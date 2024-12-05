@@ -66,8 +66,7 @@ $contact_r = mysqli_fetch_assoc(select($contact_q, $values, 'i'));
                     <i class="bi bi-person-circle"></i>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li><button class="dropdown-item" type="button">Profile</button></li>
-                    <li><button class="dropdown-item" type="button">Booking</button></li>
+                    <li><a class="dropdown-item" href="book_room_list.php">My Booking</a></li>
                     <form id="logoutForm" action="logout_handler.php" method="POST">
                         <li><button class="dropdown-item" type="submit">Logout</button></li>
                     </form>

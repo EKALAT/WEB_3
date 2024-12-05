@@ -143,6 +143,10 @@
                             $room_thumb = ROOMS_IMG_PATH . $thumb_res['image'];
                         }
 
+                        $_Booking = isset($_SESSION['user'])
+                        ?"href= 'confirm_booking.php?id={$room_data['id']}'"
+                        : " onclick=alert_(\"./login/index.php\")";
+
                         echo <<<data
 
                         <div class="col-lg-4 col-md-6 my-3">
@@ -178,8 +182,8 @@
                                         </span>
                                     </div>
                                     <div class="d-flex justify-content-evenly mb-2 t-font">
-                                        <a href= "confirm_booking.php?id=$room_data[id]" class="btn-sm text-white submit-bg shadow-none t-font">Book Now</a>
-                                        <a href= "room_details.php?id=$room_data[id]" class="btn btn-sm btn-outline-dark shadow-none">More details</a>
+                                        <a $_Booking class="btn-sm text-white submit-bg shadow-none t-font">Book Now</a>
+                                        <a $_Booking class="btn btn-sm btn-outline-dark shadow-none">More details</a>
                                     </div>
                                 </div>
                             </div>

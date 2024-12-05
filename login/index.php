@@ -44,6 +44,7 @@ if (isset($_POST['submit'])) {
             $_SESSION['user'] = $row['name'];  
             $_SESSION['phone'] = $row['phone'];  
             $_SESSION['location'] = $row['location'];  
+            $_SESSION['id'] = $row['id'];  
             echo "<script>
 
                     document.addEventListener('DOMContentLoaded', function() {

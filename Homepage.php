@@ -143,7 +143,7 @@
 
 
                 $_Booking = isset($_SESSION['user'])
-                        ? "confirm_booking.php?id={$room_data['id']}"
+                        ? "href='confirm_booking.php?id={$room_data['id']}'"
                         : " onclick=alert_(\"./login/index.php\")";
                 // print room card
 
