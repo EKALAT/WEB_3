@@ -10,6 +10,8 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php require('inc/links.php'); ?>
     <title>PMS HOTEL - CONFIRM BOOKING</title>
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <link rel="stylesheet" href="css/confirm_booking.css">
 </head>
@@ -196,7 +198,7 @@ session_start();
                 let xhr = new XMLHttpRequest();
                 xhr.open("POST", "ajax/confirm_booking.php", true);
 
-                xhr.onload = function () {
+                xhr.onload = function() {
                     let data = JSON.parse(this.responseText);
                     if (data.status === 'check_in_out_equal') {
                         pay_info.innerText = "You cannot check-out on the same day!";
@@ -212,6 +214,7 @@ session_start();
                         book_now.removeAttribute('disabled');
                     }
 
+
                     pay_info.classList.remove('d-none');
                     info_loader.classList.add('d-none');
                 };
@@ -219,6 +222,7 @@ session_start();
                 xhr.send(data);
             }
         }
+
 
         const stars = document.querySelectorAll('.star');
         const ratingInput = document.getElementById('rating');
@@ -228,7 +232,7 @@ session_start();
         });
 
         stars.forEach(star => {
-            star.addEventListener('click', function () {
+            star.addEventListener('click', function() {
                 const rating = this.getAttribute('data-rating');
                 ratingInput.value = rating;
 
@@ -241,6 +245,32 @@ session_start();
                 });
             });
         });
+    </script>
+    <script>
+        // Check if the booking was successful via PHP session variable
+        <?php if (isset($_SESSION['booking_success']) && $_SESSION['booking_success'] === true): ?>
+            // Booking data
+            const data = <?php echo json_encode($_SESSION['booking_data']); ?>;
+
+            // Trigger SweetAlert
+            Swal.fire({
+                title: 'Booking Confirmed!',
+                text: `Your booking for ${data.days} days has been successfully confirmed. Total: ${data.payment}$`,
+                icon: 'success',
+                showCancelButton: false,
+                confirmButtonText: 'OK',
+            }).then(function(result) {
+                if (result.isConfirmed) {
+                    window.location = 'book_room_list.php'; // Redirect after confirmation
+                }
+            });
+
+            // Clear session data after displaying the alert
+            <?php
+            unset($_SESSION['booking_success']);
+            unset($_SESSION['booking_data']);
+            ?>
+        <?php endif; ?>
     </script>
 
     <?php require('inc/footer.php'); ?>

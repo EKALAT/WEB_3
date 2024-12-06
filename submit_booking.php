@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $user_id = $_SESSION['id'];
     $checkin = $_POST['checkin'];
     $checkout = $_POST['checkout'];
-    $price = 10; // You can calculate this dynamically or fetch it from the room price
+    $price = $_SESSION['room']['payment']; // You can calculate this dynamically or fetch it from the room price
 
     // Check if the user is logged in
     if (!$user_id) {
@@ -39,11 +39,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->bind_param('iissd', $room_id, $user_id, $checkin, $checkout, $price);
 
     if ($stmt->execute()) {
-        // Redirect to book_room_list.php or any confirmation page
-        header("Location: book_room_list.php?user_id=$user_id");
+        // Set session variables for success
+        $_SESSION['booking_success'] = true;
+        $_SESSION['booking_data'] = [
+            'days' => (strtotime($checkout) - strtotime($checkin)) / (60 * 60 * 24),
+            'payment' => $price
+        ];
+
+        // Redirect to the same page to trigger SweetAlert on page load
+        // header("Location: " . $_SERVER['PHP_SELF']);
+        header("Location: confirm_booking.php?id=$room_id");
         exit();
     } else {
         echo "Error: " . $stmt->error;
     }
 }
-?>

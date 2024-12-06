@@ -14,7 +14,7 @@
 
                 <ul class="nav nav-pills flex-column">
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="dashboard.php">Dashboard</a>
+                        <a class="nav-link text-white" href="booking_room_user.php">List Booking</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-white" href="users.php">Users</a>
