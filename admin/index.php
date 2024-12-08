@@ -4,7 +4,7 @@ require('inc/db_config.php');
 
 session_start();
 if ((isset($_SESSION['adminLogin']) && $_SESSION['adminLogin'] == true)) {
-    require('settings.php');
+    require('dashboard.php');
 }
 ?>
 
@@ -145,7 +145,7 @@ if ((isset($_SESSION['adminLogin']) && $_SESSION['adminLogin'] == true)) {
             $row = mysqli_fetch_assoc($res);
             $_SESSION['adminLogin'] = true;
             $_SESSION['adminId'] = $row['sr_no'];
-            redirect('settings.php');
+            redirect('dashboard.php');
         } else {
             alert('error', 'Login failed - Invalid Credentials!');
         }

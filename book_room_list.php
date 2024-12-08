@@ -18,7 +18,6 @@ WHERE br.user_id = ?
 ORDER BY br.time_book DESC LIMIT 0, 25;
 ";
 
-
 $stmt = $con->prepare($query);
 $stmt->bind_param('i', $user_id);
 $stmt->execute();
@@ -34,13 +33,26 @@ $result = $stmt->get_result();
     <title>My Bookings</title>
     <?php require('inc/links.php'); ?>
     <style>
-        /* Basic Container */
+        /* Basic layout to ensure footer stays at the bottom */
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body {
+            flex-grow: 1;
+        }
+
         .container {
             width: 90%;
             margin: 0 auto;
             padding: 20px;
             text-align: center;
-            /* Ensure the table is centered inside the container */
+            flex-grow: 1; /* Make sure content takes all available space */
+            box-sizing: border-box;
         }
 
         /* Table Styling */
@@ -49,14 +61,10 @@ $result = $stmt->get_result();
             border-collapse: collapse;
             margin-top: 30px;
             margin-left: auto;
-            /* Center the table horizontally */
             margin-right: auto;
-            /* Center the table horizontally */
         }
 
-        /* Table Header and Body Styling */
-        th,
-        td {
+        th, td {
             border: 1px solid #ddd;
             padding: 15px;
             text-align: left;
@@ -99,6 +107,29 @@ $result = $stmt->get_result();
         .pay-now-btn:hover {
             background-color: red;
         }
+
+        /* Footer Styling */
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 1rem;
+            width: 100%;
+            position: relative;
+            bottom: 0;
+            margin-top: 30px;
+            clear: both;
+        }
+
+        footer a {
+            color: lightseagreen;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -113,6 +144,7 @@ $result = $stmt->get_result();
             <a class="text-secondary text-decoration-none">My Booking</a>
             <span class="text-secondary"> &gt; </span>
         </div>
+
         <?php if ($result->num_rows > 0) { ?>
             <table>
                 <thead>
@@ -153,7 +185,6 @@ $result = $stmt->get_result();
             <p class="no-bookings">No bookings found.</p>
         <?php } ?>
     </div>
-    <?php require('inc/footer.php'); ?>
 
     <script>
         function showPaymentAlert() {
@@ -165,6 +196,8 @@ $result = $stmt->get_result();
             });
         }
     </script>
+
+    <?php require('inc/footer.php'); ?>
 </body>
 
 </html>

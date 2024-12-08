@@ -1,6 +1,6 @@
 <div class="container-fluid bg-dark text-light p-3 d-flex align-items-center justify-content-between sticky-top">
     <h3 class="mb-0 h-font">PMS WEBSITE</h3>
-    <a href="logout.php" class="btn btn-light btn-sm">LOG OUT</a>
+    <a href="javascript:void(0);" class="btn btn-light btn-sm" id="logout-btn">LOG OUT</a>
 </div>
 
 <div class="col-lg-2 bg-dark border-top border-3 border-secondary" id="dashboard-menu">
@@ -13,6 +13,9 @@
             <div class="collapse navbar-collapse flex-column align-items-stretch mt-2" id="adminDropdown">
 
                 <ul class="nav nav-pills flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="dashboard.php">Dashboard</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link text-white" href="booking_room_user.php">List Booking</a>
                     </li>
@@ -39,3 +42,25 @@
         </div>
     </nav>
 </div>
+
+<!-- Include SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.22/dist/sweetalert2.all.min.js"></script>
+
+<script>
+    document.getElementById('logout-btn').addEventListener('click', function() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to log out of the admin panel!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, log out',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Redirect to logout page if confirmed
+                window.location.href = 'logout.php';
+            }
+        });
+    });
+</script>
