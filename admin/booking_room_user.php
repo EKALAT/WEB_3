@@ -1,13 +1,52 @@
 <?php
-session_start();
-require('./inc/db_config.php');
+require('inc/essentials.php');
+require('inc/db_config.php');
+adminLogin();
 
-// Ensure the user is logged in
-if (!isset($_SESSION['id'])) {
-    die("Error: Please log in to view your bookings.");
+// Handle the delete request for booking
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_booking_id'])) {
+    $bookingId = $_POST['delete_booking_id'];
+
+    // Validate the booking ID (ensure it's an integer)
+    if (filter_var($bookingId, FILTER_VALIDATE_INT) === false) {
+        echo "error";  // Invalid booking ID
+        exit;
+    }
+
+    // Call the function to delete the booking
+    if (deleteBooking($bookingId)) {
+        echo "success";  // Return success message
+    } else {
+        echo "error";  // Return error message
+    }
+    exit;
 }
 
-$user_id = $_SESSION['id'];
+// Function to delete a booking from the 'booking_room' table
+function deleteBooking($bookingId) {
+    global $con;  // Access the global database connection variable
+
+    // Prepare the DELETE query to remove a booking based on its ID
+    $query = "DELETE FROM booking_room WHERE id = ?";
+    $stmt = $con->prepare($query);  // Prepare the query statement
+
+    // Check if the query was prepared successfully
+    if (!$stmt) {
+        error_log('SQL error: ' . $con->error);  // Log error if there's a preparation issue
+        return false;  // Return false to indicate failure
+    }
+
+    // Bind the booking ID parameter to the query
+    $stmt->bind_param('i', $bookingId);  // 'i' specifies that it's an integer
+
+    // Execute the delete query
+    if ($stmt->execute()) {
+        return true;  // Return true to indicate successful deletion
+    } else {
+        error_log('Delete query failed: ' . $stmt->error);  // Log SQL error if the query fails
+        return false;  // Return false if there was an issue executing the query
+    }
+}
 
 // Fetch bookings for the logged-in user
 $query = "SELECT br.id, br.room_id, r.name AS room_name, br.check_in, br.check_out, br.total_price, br.time_book, ri.image AS room_image
@@ -19,29 +58,6 @@ ORDER BY br.time_book DESC;";
 $stmt = $con->prepare($query);
 $stmt->execute();
 $result = $stmt->get_result();
-
-// Handle delete request
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_booking_id'])) {
-    $bookingId = $_POST['delete_booking_id'];
-
-    // Validate the bookingId
-    if (filter_var($bookingId, FILTER_VALIDATE_INT) === false) {
-        echo "error";  // Invalid booking ID
-        exit;
-    }
-
-    // Prepare and execute the delete query
-    $deleteQuery = "DELETE FROM booking_room WHERE id = ?";
-    $deleteStmt = $con->prepare($deleteQuery);
-    $deleteStmt->bind_param('i', $bookingId);
-
-    if ($deleteStmt->execute()) {
-        echo "success";  // Return success message
-    } else {
-        echo "error";    // Return error message
-    }
-    exit;
-}
 ?>
 
 <!DOCTYPE html>
@@ -177,16 +193,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_booking_id']))
 <body class="bg-light">
     <?php require('inc/header.php'); ?>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <h2>PMS Website</h2>
-        <a href="dashboard.php">Dashboard</a>
-        <a href="bookings.php">My Bookings</a>
-        <a href="users.php" class="active">Users</a>
-        <a href="settings.php">Settings</a>
-        <a href="logout.php">Log Out</a>
-    </div>
-
     <!-- Content Area -->
     <div class="content">
         <h1 class="h-font">List Bookings</h1>
@@ -234,7 +240,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_booking_id']))
 
     <script>
         function deleteBooking(bookingId) {
-            // Show a confirmation dialog
+            // Show a confirmation dialog using SweetAlert2
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -244,31 +250,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_booking_id']))
                 cancelButtonText: 'No, cancel!',
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Send AJAX request to delete the booking
+                    // Create a new FormData object to send the booking ID
+                    let data = new FormData();
+                    data.append('delete_booking_id', bookingId); // Add the booking ID to the request
+
+                    // Create an XMLHttpRequest to send the POST request
                     let xhr = new XMLHttpRequest();
                     xhr.open("POST", "bookings.php", true);
-                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+                    // Set up the callback to handle the response
                     xhr.onload = function() {
-                        if (this.responseText == 'success') {
-                            // If deletion is successful, show success message and reload the page
-                            Swal.fire(
-                                'Deleted!',
-                                'Your booking has been deleted.',
-                                'success'
-                            ).then(() => {
-                                location.reload(); // Reload the page to reflect changes
-                            });
+                        if (this.status === 200) {
+                            let response = this.responseText;
+
+                            // Log the response to debug
+                            console.log('Server Response:', response);
+
+                            if (response == 'success') {
+                                // If the booking was successfully deleted, show a success message and reload the page
+                                Swal.fire(
+                                    'Deleted!',
+                                    'Your booking has been deleted.',
+                                    'success'
+                                ).then(() => {
+                                    location.reload(); // Reload the page to reflect the changes
+                                });
+                            } else {
+                                // If there was an error deleting the booking, show an error message
+                                Swal.fire(
+                                    'Error!',
+                                    'There was an issue deleting your booking. Please try again later.',
+                                    'error'
+                                );
+                            }
                         } else {
-                            // If there is an error, show an error message
+                            // Handle case where the request didn't succeed
                             Swal.fire(
                                 'Error!',
-                                'There was an issue deleting your booking. Please try again later.',
+                                'Server error. Please try again later.',
                                 'error'
                             );
                         }
                     };
-                    // Send booking ID to delete
-                    xhr.send('delete_booking_id=' + bookingId);
+
+                    // Send the request
+                    xhr.send(data);
                 }
             });
         }

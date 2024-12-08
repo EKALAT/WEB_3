@@ -5,12 +5,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PMS HOTEL - CONTACT</title>
-    <?php require ('inc/links.php') ?>
+    <?php require('inc/links.php') ?>
     <style>
         .pop:hover {
             border-top-color: var(--teal) !important;
             transform: scale(1.03);
             transition: all 0.3s;
+        }
+
+        /* Toast container for top-right position with slight adjustment */
+        .toast-container {
+            position: fixed;
+            top: 5rem;
+            right: 1rem;
+            z-index: 1055;
+        }
+
+        .toast {
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+        }
+
+        .toast.show {
+            opacity: 1;
         }
     </style>
 </head>
@@ -106,13 +123,24 @@
                             <textarea name="message" required class="form-control shadow-none" rows="5"
                                 style="resize: none;"></textarea>
                         </div>
-                        <button type="submit" name="send" class="btn text-white custom-bg mt-3">SEND</button>
+                        <button type="submit" name="send" class="btn btn-danger text-white custom-bg mt-3">SEND</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Toast container for alerts -->
+    <div class="toast-container">
+        <div id="toast-alert" class="toast align-items-center text-bg-success border-0 fade" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body t-font">
+                    Mail sent successfully!
+                </div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
 
     <?php
     if(isset($_POST['send']))
@@ -124,16 +152,20 @@
 
         $res = insert($q,$values,'ssss');
         if($res==1){
-            alert('success','Mail sent!');
+            echo "<script>
+                const toast = new bootstrap.Toast(document.getElementById('toast-alert'));
+                toast.show();
+            </script>";
         }
         else{
-            alert('error','Server Down! Try again later.');
+            echo "<script>
+                alert('Server Down! Try again later.');
+            </script>";
         }
     }
     ?>
 
     <?php require('inc/footer.php'); ?>
-
 
 </body>
 

@@ -1,5 +1,4 @@
 
-
 let pms_s_form = document.getElementById('pms_s_form');
 let pms_picture_inp = document.getElementById('pms_picture_inp');
 

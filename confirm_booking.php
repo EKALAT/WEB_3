@@ -255,10 +255,10 @@ session_start();
             // Trigger SweetAlert
             Swal.fire({
                 title: 'Booking Confirmed!',
-                text: `Your booking for ${data.days} days has been successfully confirmed. Total: ${data.payment}$`,
+                text: `Your booking for ${data.days} days has been successfully confirmed.Total: ${data.payment}$`,
                 icon: 'success',
                 showCancelButton: false,
-                confirmButtonText: 'OK',
+                confirmButtonText: 'Check Details',
             }).then(function(result) {
                 if (result.isConfirmed) {
                     window.location = 'book_room_list.php'; // Redirect after confirmation

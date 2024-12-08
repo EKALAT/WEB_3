@@ -4,7 +4,7 @@ require('inc/db_config.php');
 
 session_start();
 if ((isset($_SESSION['adminLogin']) && $_SESSION['adminLogin'] == true)) {
-    require('dashboard.php');
+    require('settings.php');
 }
 ?>
 
@@ -20,7 +20,8 @@ if ((isset($_SESSION['adminLogin']) && $_SESSION['adminLogin'] == true)) {
     <style>
         /* Body background styling */
         body {
-            background-image: url('../images/background/99.gif'); /* Your background image */
+            background-image: url('../images/background/99.gif');
+            /* Your background image */
             background-size: cover;
             background-position: center;
             height: 100vh;
@@ -38,19 +39,23 @@ if ((isset($_SESSION['adminLogin']) && $_SESSION['adminLogin'] == true)) {
             left: 50%;
             transform: translate(-50%, -50%);
             width: 400px;
-            background-color: rgba(255, 255, 255, 0.85); /* Semi-transparent white background */
+            background-color: rgba(255, 255, 255, 0.85);
+            /* Semi-transparent white background */
             border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            /* Soft shadow for depth */
             padding: 35px;
             text-align: center;
         }
 
         /* Form heading */
         h4 {
-            background-color: #003366; /* Deep blue for trust and professionalism */
+            background-color: #003366;
+            /* Deep blue for trust and professionalism */
             color: lavender;
             padding: 18px;
-            border-radius: 10px 10px 0 0; /* Rounded top corners */
+            border-radius: 10px 10px 0 0;
+            /* Rounded top corners */
             margin: -35px -35px 25px;
             font-size: 24px;
             font-weight: bold;
@@ -69,14 +74,17 @@ if ((isset($_SESSION['adminLogin']) && $_SESSION['adminLogin'] == true)) {
         }
 
         .login-form input:focus {
-            border-color: #FFD700; /* Gold highlight on focus */
+            border-color: #FFD700;
+            /* Gold highlight on focus */
             outline: none;
-            box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); /* Soft gold glow effect */
+            box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+            /* Soft gold glow effect */
         }
 
         /* Login button styling */
         .submit-bg {
-            background-color: seagreen; /* Soft golden yellow */
+            background-color: seagreen;
+            /* Soft golden yellow */
             color: whitesmoke;
             border: none;
             padding: 14px;
@@ -89,7 +97,8 @@ if ((isset($_SESSION['adminLogin']) && $_SESSION['adminLogin'] == true)) {
         }
 
         .submit-bg:hover {
-            background-color: red; /* Slightly darker gold on hover */
+            background-color: red;
+            /* Slightly darker gold on hover */
         }
 
         /* Responsive styling */
@@ -136,7 +145,7 @@ if ((isset($_SESSION['adminLogin']) && $_SESSION['adminLogin'] == true)) {
             $row = mysqli_fetch_assoc($res);
             $_SESSION['adminLogin'] = true;
             $_SESSION['adminId'] = $row['sr_no'];
-            redirect('dashboard.php');
+            redirect('settings.php');
         } else {
             alert('error', 'Login failed - Invalid Credentials!');
         }
